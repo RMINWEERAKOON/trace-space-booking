@@ -42,7 +42,7 @@ If your local port 4000 is already in use, set `PORT` in `server/.env`. If you c
 
 ## Email configuration
 
-Inquiry submission works without SMTP, and the inquiry is persisted in SQLite. To send actual email, edit `server/.env`:
+Inquiry submission works without SMTP,  and the inquiry is persisted in SQLite. To send actual email, edit `server/.env`:
 
 ```dotenv
 ADMIN_EMAIL=your-admin@example.com
