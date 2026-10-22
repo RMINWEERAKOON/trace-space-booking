@@ -76,6 +76,7 @@ Copy the generated value into `TOKEN_SECRET`. Do not commit `server/.env` or sha
 ## Email configuration (optional)
 
 Booking confirmation emails are sent to the customer after a booking is successfully saved. Inquiry notifications are sent to the configured administrator. Both features require SMTP. Bookings and inquiries are still saved if SMTP is not configured or an email delivery attempt fails. The API response and dashboard notification report whether the customer email was sent. Configure the following in `server/.env`:
+Inquiry submission works without SMTP,  and the inquiry is persisted in SQLite. To send actual email, edit `server/.env`:
 
 ```dotenv
 ADMIN_EMAIL=your-admin@example.com
