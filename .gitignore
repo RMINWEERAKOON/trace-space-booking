@@ -5,3 +5,4 @@ server/data/*.sqlite-shm
 server/data/*.sqlite-wal
 .env
 .DS_Store
+server/data/initial-admin-credentials.txt

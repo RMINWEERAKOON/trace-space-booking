@@ -12,6 +12,16 @@ db.pragma('foreign_keys = ON');
 db.pragma('busy_timeout = 5000');
 
 db.exec(`
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT NOT NULL COLLATE NOCASE UNIQUE,
+  password_hash TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'admin' CHECK(role IN ('admin','staff','viewer')),
+  active INTEGER NOT NULL DEFAULT 1,
+  token_version INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_login TEXT
+);
 CREATE TABLE IF NOT EXISTS spaces (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,
@@ -94,6 +104,9 @@ if (bookingCount === 0) {
   const fmt = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const customer = db.prepare('INSERT INTO customers (name,email,phone) VALUES (?,?,?)').run('Kavindi Fernando','kavindi.demo@example.com','+94 77 123 4567');
   const reference = 'TRC-DEMO01';
-  db.prepare(`INSERT INTO bookings (reference,space_id,customer_id,start_date,end_date,rental_unit,quantity,rate,total,status,notes) VALUES (?,?,?,?,?,'hour',2,?,?, 'confirmed',?)`)
+  db.prepare(`INSERT INTO bookings (reference,space_id,customer_id,start_date,end_date,start_time,end_time,rental_unit,quantity,rate,total,status,notes) VALUES (?,?,?,?,?,'09:00','11:00','hour',2,?,?, 'confirmed',?)`)
     .run(reference, space.id, customer.lastInsertRowid, fmt(start), fmt(start), Number(space.rate), Number(space.rate)*2, 'Sample booking for the hackathon demo.');
 }
+
+// Upgrade the built-in demo booking from older versions that did not save its time slot.
+db.prepare("UPDATE bookings SET start_time='09:00', end_time='11:00' WHERE reference='TRC-DEMO01' AND rental_unit='hour' AND start_time IS NULL").run();
